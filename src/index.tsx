@@ -4,6 +4,11 @@ import type { MaterialSymbolWeight, PolymorphicComponentProps, SymbolCodepoints 
 export type { MaterialSymbolWeight, SymbolCodepoints } from './types';
 import { combineClasses } from './utils';
 
+export const MATERIAL_SYMBOL_FILL_VAR = "--material-symbols-fill";
+export const MATERIAL_SYMBOL_GRAD_VAR = "--material-symbols-grad";
+export const MATERIAL_SYMBOL_SIZE_VAR = "--material-symbols-size";
+export const MATERIAL_SYMBOL_WEIGHT_VAR = "--material-symbols-weight";
+
 export type MaterialSymbolProps = {
 	/** Required. The name of the icon to render. */
 	icon: SymbolCodepoints;
@@ -50,25 +55,19 @@ export const MaterialSymbol = forwardRef(
 		ref: Ref<C>
 	): ReactElement => {
 		const Component = onClick !== undefined ? 'button' : (as as ElementType) ?? 'span';
-		const style = { color, ...propStyle };
+		const style = { color, "--material-symbols-size-px": "calc(var(--material-symbols-size) * 1px)", ...propStyle };
 
 		if (fill)
-			style.fontVariationSettings = [style.fontVariationSettings, '"FILL" 1']
-				.filter(Boolean)
-				.join(', ');
+			(style as Record<string, unknown>)[MATERIAL_SYMBOL_FILL_VAR] = 1;
 		if (weight)
-			style.fontVariationSettings = [style.fontVariationSettings, `"wght" ${weight}`]
-				.filter(Boolean)
-				.join(', ');
+			// When weight is supplied, we also set the `data-weight` attribute
+			// so that we can switch to the CSS rule that specifies the "wght"
+			// font variation axis.
+			(style as Record<string, unknown>)[MATERIAL_SYMBOL_WEIGHT_VAR] = weight;
 		if (grade)
-			style.fontVariationSettings = [style.fontVariationSettings, `"GRAD" ${grade}`]
-				.filter(Boolean)
-				.join(', ');
+			(style as Record<string, unknown>)[MATERIAL_SYMBOL_GRAD_VAR] = grade;
 		if (size) {
-			style.fontVariationSettings = [style.fontVariationSettings, `"opsz" ${size}`]
-				.filter(Boolean)
-				.join(', ');
-			style.fontSize = size;
+			(style as Record<string, unknown>)[MATERIAL_SYMBOL_SIZE_VAR] = size;
 		}
 
 		return (
@@ -78,6 +77,7 @@ export const MaterialSymbol = forwardRef(
 				style={style}
 				onClick={onClick}
 				className={combineClasses('material-symbols', className)}
+				{...(weight && { "data-weight": true})}
 			>
 				{icon}
 			</Component>

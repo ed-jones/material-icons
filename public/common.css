@@ -2,7 +2,7 @@
 	user-select: none;
 	font-weight: normal;
 	font-style: normal;
-	font-size: inherit;
+	font-size: var(--material-symbols-size-px, inherit);
 	display: inline-block;
 	line-height: 1;
 	text-transform: none;
@@ -10,4 +10,9 @@
 	word-wrap: normal;
 	white-space: nowrap;
 	direction: ltr;
+	font-variation-settings: "FILL" var(--material-symbols-fill, 0), "GRAD" var(--material-symbols-grad, 0), "opsz" max(var(--material-symbols-size, 20), 20);
+}
+
+.material-symbols[data-weight] {
+	font-variation-settings: "FILL" var(--material-symbols-fill, 0), "GRAD" var(--material-symbols-grad, 0), "opsz" max(var(--material-symbols-size, 20), 20), "wght" var(--material-symbols-weight);
 }
